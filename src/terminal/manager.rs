@@ -248,6 +248,13 @@ impl TabManager {
         self.groups.get(&id)
     }
 
+    /// Look up the project group that contains the given tab.
+    pub fn group_of_tab(&self, tab_id: u64) -> Option<&TabGroup> {
+        self.groups
+            .values()
+            .find(|g| g.tabs.iter().any(|t| t.id == tab_id))
+    }
+
     /// Persist the session if any group changed since the last flush.
     /// Called once per frame by `App`; mutating methods mark the session
     /// dirty automatically, so callers never need to remember to save.

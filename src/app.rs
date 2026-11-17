@@ -639,15 +639,23 @@ impl eframe::App for App {
                         .get_tab(tab_id)
                         .map(|t| t.title.clone())
                         .unwrap_or_default();
+                    // Captured before `remove`: killing the last tab of a
+                    // group removes the group itself.
+                    let project = self
+                        .tab_manager
+                        .group_of_tab(tab_id)
+                        .map(|g| g.name.clone())
+                        .unwrap_or_default();
                     log::warn!(
-                        "Tab {} '{}' exceeded memory limit {} MB ({}), killing",
+                        "Tab {} '{}' of project '{}' exceeded memory limit {} MB ({}), killing",
                         tab_id,
                         title,
+                        project,
                         self.tab_memory_limit_mb,
                         crate::system_monitor::format_kb(tab_kb)
                     );
                     self.tab_manager.remove(tab_id);
-                    self.window_manager.tab_killed(self.tab_memory_limit_mb);
+                    self.window_manager.tab_killed(self.tab_memory_limit_mb, &project);
                 }
             }
         }

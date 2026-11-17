@@ -15,8 +15,11 @@ impl super::WindowManager {
     }
 
     /// Show the notice for a tab killed by the per-tab memory limit.
-    pub fn tab_killed(&mut self, limit_mb: u64) {
-        self.tab_killed_message = format!("Tab was killed as memory leak, limit {} MB", limit_mb);
+    pub fn tab_killed(&mut self, limit_mb: u64, project: &str) {
+        self.tab_killed_message = format!(
+            "Tab in project '{}' was killed as memory leak, limit {} MB",
+            project, limit_mb
+        );
         self.show_tab_killed = true;
     }
 
